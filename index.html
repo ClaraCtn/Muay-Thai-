@@ -18,6 +18,7 @@
             --font-heading: 'Oswald', sans-serif;
             --font-body: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             --transition: all 0.3s ease;
+            --sync-green: #00e676;
         }
 
         * {
@@ -185,7 +186,6 @@
             min-height: 100px;
         }
 
-        /* Styling applied only when content is actively editable */
         .editable-content[contenteditable="true"] {
             background-color: rgba(255, 255, 255, 0.03);
             border-color: var(--bg-surface-light);
@@ -440,13 +440,45 @@
             color: white;
         }
 
-        /* --- FOOTER --- */
+        /* --- FOOTER & LIVE SYNC DOT --- */
         footer {
             background: var(--bg-surface);
             text-align: center;
             padding: 2rem;
             border-top: 1px solid var(--bg-surface-light);
             color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .live-sync {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--sync-green);
+            font-weight: 600;
+            font-family: var(--font-body);
+            background: rgba(0, 230, 118, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 230, 118, 0.2);
+        }
+
+        .sync-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--sync-green);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
         }
 
         /* --- RESPONSIVE DESIGN --- */
@@ -495,7 +527,6 @@
         <section class="info-grid">
             <div id="history" class="info-card">
                 <h2>Origins & History <span class="edit-icon" id="edit-history-btn" title="Unlock to edit">✏️</span></h2>
-                <!-- Note: contenteditable is false by default until unlocked via password -->
                 <div id="history-text" class="editable-content" contenteditable="false">
                     <p>Loading history from database...</p>
                 </div>
@@ -581,6 +612,10 @@
 
     <footer>
         <p>&copy; 2026 Muay Thai Team Repository. Built with respect for the Art of Eight Limbs.</p>
+        <div class="live-sync" id="liveSyncIndicator" style="display: none;">
+            <div class="sync-dot"></div>
+            Live Sync Active
+        </div>
     </footer>
 
     <!-- Firebase & JavaScript Logic -->
@@ -628,6 +663,7 @@
         const waikruText = document.getElementById('waikru-text');
         const editHistoryBtn = document.getElementById('edit-history-btn');
         const editWaikruBtn = document.getElementById('edit-waikru-btn');
+        const liveSyncIndicator = document.getElementById('liveSyncIndicator');
 
         // State Management
         let movesData = [];
@@ -661,6 +697,11 @@
                 // Sort by timestamp (newest first)
                 movesData.sort((a, b) => b.createdAt - a.createdAt);
                 handleFilter(); // Render the moves
+                
+                // Show Live Sync Indicator once data successfully loads
+                liveSyncIndicator.style.display = 'flex';
+            }, (error) => {
+                console.error("Error fetching moves: ", error);
             });
 
             // 2. Listen for changes to the Editable Text Document in the 'metadata' collection

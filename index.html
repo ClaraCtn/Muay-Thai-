@@ -53,6 +53,7 @@
             border-bottom: 2px solid var(--accent-red);
             display: inline-block;
             padding-bottom: 0.5rem;
+            position: relative;
         }
 
         /* --- HEADER & NAVIGATION --- */
@@ -145,7 +146,7 @@
             margin-bottom: 5rem;
         }
 
-        /* --- HISTORY & WAI KRU SECTIONS --- */
+        /* --- HISTORY & WAI KRU SECTIONS (EDITABLE) --- */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -160,7 +161,40 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .info-card p {
+        .edit-icon {
+            font-size: 1.2rem;
+            vertical-align: middle;
+            margin-left: 10px;
+            opacity: 0.5;
+            cursor: help;
+            transition: var(--transition);
+        }
+
+        .edit-icon:hover {
+            opacity: 1;
+        }
+
+        .editable-content {
+            outline: none;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .editable-content:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-color: var(--bg-surface-light);
+        }
+
+        .editable-content:focus {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-gold);
+            border-left: 3px solid var(--accent-gold);
+        }
+
+        .editable-content p {
             color: var(--text-muted);
             margin-bottom: 1rem;
             text-align: justify;
@@ -454,18 +488,22 @@
     </section>
 
     <main>
-        <!-- History & Wai Kru Sections -->
+        <!-- History & Wai Kru Sections (Editable) -->
         <section class="info-grid">
             <div id="history" class="info-card">
-                <h2>Origins & History</h2>
-                <p>Muay Thai, known as the "Art of Eight Limbs," originated in the ancient kingdom of Siam (now Thailand). Developed as a form of close-combat that used the entire body as a weapon, it was heavily utilized by Siamese soldiers on the battlefield.</p>
-                <p>Over centuries, it evolved from a deadly military tactic into a highly respected ring sport. Today, it stands as Thailand's national sport and a globally practiced martial art, celebrated for its raw power, discipline, and profound cultural roots.</p>
+                <h2>Origins & History <span class="edit-icon" title="Click the text below to edit">✏️</span></h2>
+                <div id="history-text" class="editable-content" contenteditable="true">
+                    <p>Muay Thai, known as the "Art of Eight Limbs," originated in the ancient kingdom of Siam (now Thailand). Developed as a form of close-combat that used the entire body as a weapon, it was heavily utilized by Siamese soldiers on the battlefield.</p>
+                    <p>Over centuries, it evolved from a deadly military tactic into a highly respected ring sport. Today, it stands as Thailand's national sport and a globally practiced martial art, celebrated for its raw power, discipline, and profound cultural roots.</p>
+                </div>
             </div>
 
             <div id="waikru" class="info-card">
-                <h2>Wai Kru Ram Muay</h2>
-                <p>The <strong>Wai Kru Ram Muay</strong> is a traditional ritual dance performed by fighters before a bout. "Wai" is a traditional Thai greeting of respect, and "Kru" means teacher. "Ram Muay" translates to the boxing dance.</p>
-                <p>This sacred ritual serves multiple purposes: it pays homage to the fighter's teachers, parents, and ancestors; it acts as a physical warm-up; and it symbolically seals the ring to protect the fighters from bad spirits. It is a profound display of the spiritual side of Muay Thai.</p>
+                <h2>Wai Kru Ram Muay <span class="edit-icon" title="Click the text below to edit">✏️</span></h2>
+                <div id="waikru-text" class="editable-content" contenteditable="true">
+                    <p>The <strong>Wai Kru Ram Muay</strong> is a traditional ritual dance performed by fighters before a bout. "Wai" is a traditional Thai greeting of respect, and "Kru" means teacher. "Ram Muay" translates to the boxing dance.</p>
+                    <p>This sacred ritual serves multiple purposes: it pays homage to the fighter's teachers, parents, and ancestors; it acts as a physical warm-up; and it symbolically seals the ring to protect the fighters from bad spirits. It is a profound display of the spiritual side of Muay Thai.</p>
+                </div>
             </div>
         </section>
 
@@ -582,15 +620,33 @@
         const filterSelect = document.getElementById('filterSelect');
         const addMoveForm = document.getElementById('addMoveForm');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        
+        // Editable Text Elements
+        const historyText = document.getElementById('history-text');
+        const waikruText = document.getElementById('waikru-text');
 
         // State Management
         let movesData = [];
 
         // Initialize Application
         function init() {
+            loadEditableContent();
             loadMoves();
             renderMoves(movesData);
             setupEventListeners();
+        }
+
+        // Load Editable Text Content from LocalStorage
+        function loadEditableContent() {
+            const savedHistory = localStorage.getItem('muayThaiHistoryText');
+            const savedWaikru = localStorage.getItem('muayThaiWaikruText');
+
+            if (savedHistory) {
+                historyText.innerHTML = savedHistory;
+            }
+            if (savedWaikru) {
+                waikruText.innerHTML = savedWaikru;
+            }
         }
 
         // Load moves from LocalStorage or use defaults
@@ -730,11 +786,21 @@
 
         // Setup Event Listeners
         function setupEventListeners() {
+            // Move Library Events
             searchInput.addEventListener('input', handleFilter);
             filterSelect.addEventListener('change', handleFilter);
             addMoveForm.addEventListener('submit', handleAddMove);
-            movesGrid.addEventListener('click', handleDeleteMove); // Event Delegation for dynamic cards
+            movesGrid.addEventListener('click', handleDeleteMove);
             clearAllBtn.addEventListener('click', handleClearAll);
+
+            // Editable Text Events (Auto-save on input)
+            historyText.addEventListener('input', () => {
+                localStorage.setItem('muayThaiHistoryText', historyText.innerHTML);
+            });
+            
+            waikruText.addEventListener('input', () => {
+                localStorage.setItem('muayThaiWaikruText', waikruText.innerHTML);
+            });
         }
 
         // Run Init on DOM Load

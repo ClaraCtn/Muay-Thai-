@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muay Thai Team Repository</title>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-dark: #0d0d0d;
+            --bg-surface: #1a1a1a;
+            --bg-surface-light: #262626;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #b5952f;
+            --accent-red: #c8102e;
+            --text-main: #f5f5f5;
+            --text-muted: #a3a3a3;
+            --font-heading: 'Oswald', sans-serif;
+            --font-body: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@400;600;700&display=swap');
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--accent-red);
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        header {
+            background-color: rgba(13, 13, 13, 0.95);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--bg-surface-light);
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            margin-top: 70px;
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(13, 13, 13, 0.8), rgba(13, 13, 13, 0.9)), url('https://images.unsplash.com/photo-1544365558-35aa4afcf11f?auto=format&fit=crop&w=1920&q=80') center/cover;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: var(--accent-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 1rem auto 0;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section {
+            margin-bottom: 5rem;
+        }
+
+        /* --- HISTORY & WAI KRU SECTIONS --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .info-card {
+            background: var(--bg-surface);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        /* --- INTERACTIVE MOVES LIBRARY --- */
+        .library-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input, .filter-select {
+            padding: 0.8rem 1.2rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--bg-surface-light);
+            color: var(--text-main);
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus, .filter-select:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .moves-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* --- MOVE CARD --- */
+        .move-card {
+            background: var(--bg-surface);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .move-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-red);
+            box-shadow: 0 8px 25px rgba(200, 16, 46, 0.2);
+        }
+
+        .move-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .move-content {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .move-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .move-type-badge {
+            display: inline-block;
+            background: var(--accent-red);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--text-muted);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-btn:hover {
+            background: var(--accent-red);
+            color: white;
+            border-color: var(--accent-red);
+        }
+
+        .move-thai-name {
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.2rem;
+        }
+
+        .move-eng-name {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .move-desc {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+        }
+
+        .model-container {
+            width: 100%;
+            height: 220px;
+            background: #000;
+            position: relative;
+            border-top: 1px solid var(--bg-surface-light);
+        }
+
+        .model-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .no-model {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: #111;
+        }
+
+        /* --- ADMIN FORM --- */
+        .admin-section {
+            background: var(--bg-surface);
+            padding: 3rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--accent-red);
+        }
+
+        .admin-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 0.8rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--bg-surface-light);
+            color: var(--text-main);
+            border-radius: 4px;
+            font-family: var(--font-body);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            padding: 1rem;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: #a00d25;
+        }
+
+        .clear-all-btn {
+            grid-column: 1 / -1;
+            padding: 1rem;
+            background: transparent;
+            color: var(--accent-red);
+            border: 2px solid var(--accent-red);
+            border-radius: 4px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        .clear-all-btn:hover {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--bg-surface);
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--bg-surface-light);
+            color: var(--text-muted);
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-form {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">MUAY<span>THAI</span> REP</a>
+            <ul class="nav-links">
+                <li><a href="#history">History</a></li>
+                <li><a href="#waikru">Wai Kru</a></li>
+                <li><a href="#library">Moves Library</a></li>
+                <li><a href="#admin">Add Move</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div>
+            <h1>The Art of Eight Limbs</h1>
+            <p>Explore the history, culture, and techniques of traditional Muay Thai.</p>
+        </div>
+    </section>
+
+    <main>
+        <!-- History & Wai Kru Sections -->
+        <section class="info-grid">
+            <div id="history" class="info-card">
+                <h2>Origins & History</h2>
+                <p>Muay Thai, known as the "Art of Eight Limbs," originated in the ancient kingdom of Siam (now Thailand). Developed as a form of close-combat that used the entire body as a weapon, it was heavily utilized by Siamese soldiers on the battlefield.</p>
+                <p>Over centuries, it evolved from a deadly military tactic into a highly respected ring sport. Today, it stands as Thailand's national sport and a globally practiced martial art, celebrated for its raw power, discipline, and profound cultural roots.</p>
+            </div>
+
+            <div id="waikru" class="info-card">
+                <h2>Wai Kru Ram Muay</h2>
+                <p>The <strong>Wai Kru Ram Muay</strong> is a traditional ritual dance performed by fighters before a bout. "Wai" is a traditional Thai greeting of respect, and "Kru" means teacher. "Ram Muay" translates to the boxing dance.</p>
+                <p>This sacred ritual serves multiple purposes: it pays homage to the fighter's teachers, parents, and ancestors; it acts as a physical warm-up; and it symbolically seals the ring to protect the fighters from bad spirits. It is a profound display of the spiritual side of Muay Thai.</p>
+            </div>
+        </section>
+
+        <!-- Interactive Moves Library -->
+        <section id="library">
+            <h2>Moves Library</h2>
+            
+            <div class="library-controls">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search moves by Thai or English name...">
+                <select id="filterSelect" class="filter-select">
+                    <option value="All">All Types</option>
+                    <option value="Punch">Punch (Mahd)</option>
+                    <option value="Kick">Kick (Tae)</option>
+                    <option value="Knee">Knee (Khao)</option>
+                    <option value="Elbow">Elbow (Sok)</option>
+                    <option value="Clinch">Clinch (Chap Ko)</option>
+                    <option value="Defense">Defense / Block</option>
+                </select>
+            </div>
+
+            <div id="movesGrid" class="moves-grid">
+                <!-- Move Cards will be dynamically injected here via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Admin Form to Add New Moves -->
+        <section id="admin" class="admin-section">
+            <h2>Add New Move</h2>
+            <form id="addMoveForm" class="admin-form">
+                <div class="form-group">
+                    <label for="thaiName">Thai Name</label>
+                    <input type="text" id="thaiName" placeholder="e.g., Teep" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="engName">English / Literal Name</label>
+                    <input type="text" id="engName" placeholder="e.g., Push Kick" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="moveType">Move Type</label>
+                    <select id="moveType" required>
+                        <option value="" disabled selected>Select Type</option>
+                        <option value="Punch">Punch</option>
+                        <option value="Kick">Kick</option>
+                        <option value="Knee">Knee</option>
+                        <option value="Elbow">Elbow</option>
+                        <option value="Clinch">Clinch</option>
+                        <option value="Defense">Defense</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="imgUrl">Image URL (Optional)</label>
+                    <input type="url" id="imgUrl" placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Describe the mechanics and purpose of the move..." required></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="iframeEmbed">Sketchfab 3D Model Iframe (Optional)</label>
+                    <textarea id="iframeEmbed" placeholder='Paste the full <iframe ...></iframe> code here'></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Add Move to Library</button>
+                <button type="button" id="clearAllBtn" class="clear-all-btn">Clear All Moves</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Muay Thai Team Repository. Built with respect for the Art of Eight Limbs.</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Default data to populate the library if LocalStorage is empty
+        const defaultMoves = [
+            {
+                id: 1,
+                thaiName: "Teep",
+                engName: "Push Kick",
+                type: "Kick",
+                description: "A linear strike used to manage distance, disrupt the opponent's balance, or inflict damage to the midsection or face.",
+                imgUrl: "https://images.unsplash.com/photo-1599552611573-863076845347?auto=format&fit=crop&w=600&q=80",
+                iframeEmbed: ""
+            },
+            {
+                id: 2,
+                thaiName: "Sok Tad",
+                engName: "Horizontal Elbow",
+                type: "Elbow",
+                description: "A devastating close-range strike slashing horizontally across the opponent's guard, targeting the jaw or temple.",
+                imgUrl: "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=600&q=80",
+                iframeEmbed: ""
+            },
+            {
+                id: 3,
+                thaiName: "Khao Dtrong",
+                engName: "Straight Knee",
+                type: "Knee",
+                description: "A powerful upward thrust of the knee, often utilized in the clinch to target the ribs, solar plexus, or head.",
+                imgUrl: "https://images.unsplash.com/photo-1517438322307-e67111335449?auto=format&fit=crop&w=600&q=80",
+                iframeEmbed: ""
+            }
+        ];
+
+        // DOM Elements
+        const movesGrid = document.getElementById('movesGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterSelect');
+        const addMoveForm = document.getElementById('addMoveForm');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+
+        // State Management
+        let movesData = [];
+
+        // Initialize Application
+        function init() {
+            loadMoves();
+            renderMoves(movesData);
+            setupEventListeners();
+        }
+
+        // Load moves from LocalStorage or use defaults
+        function loadMoves() {
+            const storedMoves = localStorage.getItem('muayThaiMoves');
+            if (storedMoves) {
+                movesData = JSON.parse(storedMoves);
+            } else {
+                movesData = [...defaultMoves];
+                saveMoves();
+            }
+        }
+
+        // Save moves to LocalStorage
+        function saveMoves() {
+            localStorage.setItem('muayThaiMoves', JSON.stringify(movesData));
+        }
+
+        // Render moves to the grid
+        function renderMoves(movesToRender) {
+            movesGrid.innerHTML = ''; // Clear current grid
+
+            if (movesToRender.length === 0) {
+                movesGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">No moves found in the library.</p>';
+                return;
+            }
+
+            movesToRender.forEach(move => {
+                const card = document.createElement('div');
+                card.className = 'move-card';
+
+                // Image Handling
+                const imageSrc = move.imgUrl ? move.imgUrl : 'https://images.unsplash.com/photo-1544365558-35aa4afcf11f?auto=format&fit=crop&w=600&q=80'; // Fallback image
+
+                // 3D Model Handling
+                let modelHTML = '';
+                if (move.iframeEmbed && move.iframeEmbed.includes('<iframe')) {
+                    modelHTML = move.iframeEmbed;
+                } else {
+                    modelHTML = '<div class="no-model">No 3D Model Provided</div>';
+                }
+
+                card.innerHTML = `
+                    <img src="${imageSrc}" alt="${move.thaiName}" class="move-image" loading="lazy">
+                    <div class="move-content">
+                        <div class="move-header">
+                            <span class="move-type-badge">${move.type}</span>
+                            <button class="delete-btn" data-id="${move.id}">Delete</button>
+                        </div>
+                        <h3 class="move-thai-name">${move.thaiName}</h3>
+                        <p class="move-eng-name">"${move.engName}"</p>
+                        <p class="move-desc">${move.description}</p>
+                    </div>
+                    <div class="model-container">
+                        ${modelHTML}
+                    </div>
+                `;
+
+                movesGrid.appendChild(card);
+            });
+        }
+
+        // Filter and Search Logic
+        function handleFilter() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterType = filterSelect.value;
+
+            const filteredMoves = movesData.filter(move => {
+                const matchesSearch = move.thaiName.toLowerCase().includes(searchTerm) || 
+                                      move.engName.toLowerCase().includes(searchTerm);
+                const matchesType = filterType === 'All' || move.type === filterType;
+                
+                return matchesSearch && matchesType;
+            });
+
+            renderMoves(filteredMoves);
+        }
+
+        // Add New Move Logic
+        function handleAddMove(e) {
+            e.preventDefault();
+
+            // Gather form values
+            const newMove = {
+                id: Date.now(), // Unique ID
+                thaiName: document.getElementById('thaiName').value.trim(),
+                engName: document.getElementById('engName').value.trim(),
+                type: document.getElementById('moveType').value,
+                imgUrl: document.getElementById('imgUrl').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                iframeEmbed: document.getElementById('iframeEmbed').value.trim()
+            };
+
+            // Update State
+            movesData.push(newMove);
+            saveMoves();
+
+            // Reset Form and Filters
+            addMoveForm.reset();
+            searchInput.value = '';
+            filterSelect.value = 'All';
+
+            // Re-render UI instantly
+            renderMoves(movesData);
+
+            // Scroll to the newly added item in the library
+            document.getElementById('library').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Delete Single Move Logic
+        function handleDeleteMove(e) {
+            // Check if the clicked element is a delete button
+            if (e.target.classList.contains('delete-btn')) {
+                const moveId = parseInt(e.target.getAttribute('data-id'));
+                
+                if (confirm("Are you sure you want to delete this move?")) {
+                    // Filter out the deleted move
+                    movesData = movesData.filter(move => move.id !== moveId);
+                    
+                    // Save to LocalStorage
+                    saveMoves();
+                    
+                    // Re-apply current filters and render
+                    handleFilter();
+                }
+            }
+        }
+
+        // Clear All Moves Logic
+        function handleClearAll() {
+            if (confirm("Are you sure you want to delete ALL moves? This action cannot be undone.")) {
+                movesData = [];
+                saveMoves();
+                handleFilter();
+            }
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            searchInput.addEventListener('input', handleFilter);
+            filterSelect.addEventListener('change', handleFilter);
+            addMoveForm.addEventListener('submit', handleAddMove);
+            movesGrid.addEventListener('click', handleDeleteMove); // Event Delegation for dynamic cards
+            clearAllBtn.addEventListener('click', handleClearAll);
+        }
+
+        // Run Init on DOM Load
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
